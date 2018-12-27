@@ -5,12 +5,15 @@ pipeline {
         VIRTUAL_ENV_PATH = "${env.WORKSPACE}/venv"
         VIRTUAL_ENV_ACTIVATOR = "${VIRTUAL_ENV_PATH}/bin/activate"
         REPORTS_PATH = "${env.WORKSPACE}/reports"
-        PYTHON_BASE_INTERPRETER_PATH = "/usr/bin/python3m"
+        PYTHON_BASE_INTERPRETER_PATH = "/opt/rh/rh-python36/root/usr/bin/python"
     }
 
     stages {
         stage('Prepare environment') {
             steps {
+               script {
+                    currentBuild.description = "<b>HASH:</b> ${GIT_COMMIT}"
+                }
                 echo "Preparing clean build environment"
                 sh """
                 rm -Rf ${REPORTS_PATH} && mkdir ${REPORTS_PATH}
@@ -58,7 +61,7 @@ pipeline {
     post {
         always {
             dir ("${REPORTS_PATH}"){
-                archiveArtifacts artifacts: "*.log", onlyIfSuccessful: true
+                archiveArtifacts artifacts: "*.log"
             }
         }
     }
