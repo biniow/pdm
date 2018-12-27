@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         VIRTUAL_ENV_PATH = "${env.WORKSPACE}/venv"
-        VIRTUAL_ENV_ACTIVATOR = "${VIRTUAL_ENV_PATH}/bin/activate"
+        VIRTUAL_ENV_ACTIVATOR = ". ${VIRTUAL_ENV_PATH}/bin/activate &> /dev/null"
         REPORTS_PATH = "${env.WORKSPACE}/reports"
         PYTHON_BASE_INTERPRETER_PATH = "/opt/rh/rh-python36/root/usr/bin/python"
     }
@@ -31,7 +31,7 @@ pipeline {
         stage('Install requirements') {
             steps {
                 sh """
-                . ${VIRTUAL_ENV_ACTIVATOR}
+                ${VIRTUAL_ENV_ACTIVATOR}
                 pip install --upgrade pip
                 pip install -r requirements.txt
                 """
@@ -41,7 +41,7 @@ pipeline {
         stage('PyLint') {
             steps {
                 sh """
-                . ${VIRTUAL_ENV_ACTIVATOR}
+                ${VIRTUAL_ENV_ACTIVATOR}
                 pip install pylint
                 pylint pdm | tee ${REPORTS_PATH}/pylint.log
                 """
@@ -51,7 +51,7 @@ pipeline {
         stage('UT') {
             steps {
                 sh """
-                . ${VIRTUAL_ENV_ACTIVATOR}
+                ${VIRTUAL_ENV_ACTIVATOR}
                 python -m unittest pdm.tests | tee ${REPORTS_PATH}/ut.log
                 """
             }
