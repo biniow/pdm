@@ -43,7 +43,7 @@ pipeline {
                 sh """
                 ${VIRTUAL_ENV_ACTIVATOR}
                 pip install pylint==2.1.1
-                pylint pdm --ignore=tests | tee ${REPORTS_PATH}/pylint.log
+                pylint pdm --ignore=tests --rcfile=config.rcfile | tee ${REPORTS_PATH}/pylint.log
                 """
             }
         }
