@@ -42,8 +42,8 @@ pipeline {
             steps {
                 sh """
                 ${VIRTUAL_ENV_ACTIVATOR}
-                pip install pylint
-                pylint pdm | tee ${REPORTS_PATH}/pylint.log
+                pip install pylint==2.1.1
+                pylint pdm --ignore=tests | tee ${REPORTS_PATH}/pylint.log
                 """
             }
         }
@@ -52,7 +52,7 @@ pipeline {
             steps {
                 sh """
                 ${VIRTUAL_ENV_ACTIVATOR}
-                python -m unittest pdm.tests | tee ${REPORTS_PATH}/ut.log
+                python -m unittest  discover pdm.tests
                 """
             }
         }
@@ -61,7 +61,7 @@ pipeline {
     post {
         always {
             dir ("${REPORTS_PATH}"){
-                archiveArtifacts artifacts: "*.log"
+                archiveArtifacts artifacts: "pylint.log"
             }
         }
     }
