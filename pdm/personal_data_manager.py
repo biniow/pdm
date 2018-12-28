@@ -17,7 +17,7 @@ class PersonalDataManager:
         self.data_records = set()
 
         for record in input_data:
-            if isinstance(record, tuple) or isinstance(record, list):
+            if isinstance(record, (tuple, list)):
                 self.data_records.add(_PersonalData(*record))
             elif isinstance(record, dict):
                 self.data_records.add(_PersonalData(**record))
