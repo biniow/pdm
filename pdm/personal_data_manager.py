@@ -7,7 +7,13 @@ import collections
 from data_processors_registry import INPUT_FORMATS, OUTPUT_FORMATS, get_data_processor
 
 
-_PersonalData = collections.namedtuple('_PersonalData', 'name address phone_number')
+class _PersonalData(collections.namedtuple('_PersonalData', 'name address phone_number')):
+    __slots__ = ()
+
+    def __str__(self):
+        return "Name: {name}\nAddress: {address}\nPhone number: {phone_number}".format(name=self.name,
+                                                                                       address=self.address,
+                                                                                       phone_number=self.phone_number)
 
 
 class PersonalDataManager:
