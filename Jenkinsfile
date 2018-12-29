@@ -48,12 +48,22 @@ pipeline {
             }
         }
 
-        stage('UT') {
+        stage('UT with coverage') {
             steps {
                 sh """
                 ${VIRTUAL_ENV_ACTIVATOR}
-                python -m unittest  discover pdm.tests
+                coverage run -m unittest  discover pdm.tests
+                coverage report -m | tee ${REPORTS_PATH}/coverage.log
                 """
+
+                script {
+                    def coverage = sh (
+                        script: 'cat ${REPORTS_PATH}/coverage.log | grep -E ^TOTAL | awk \'{print $4}\'',
+                        returnStdout: true
+                    ).trim()
+                    currentBuild.description = currentBuild.description + "<br/><b>COVERAGE:</b> ${coverage}"
+
+                }
             }
         }
     }
@@ -61,7 +71,7 @@ pipeline {
     post {
         always {
             dir ("${REPORTS_PATH}"){
-                archiveArtifacts artifacts: "pylint.log"
+                archiveArtifacts artifacts: "*.log"
             }
         }
     }
