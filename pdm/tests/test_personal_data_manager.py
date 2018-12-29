@@ -1,4 +1,7 @@
+# -*- coding: utf-8 -*-
+
 """Unittests for personal_data_manager module"""
+
 from unittest import TestCase
 
 from pdm.personal_data_manager import PersonalDataManager, _PersonalData
@@ -69,5 +72,3 @@ class TestPersonalDataManager(TestCase):
 
         # Assert
         self.assertEqual(1, len(pdm.data_records))
-
-
