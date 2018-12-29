@@ -11,6 +11,6 @@ def read_json(file_path):
     :param file_path: path to json input file
     :return: list of records
     """
-    with open(file_path) as fp:
-        data = json.load(fp)
+    with open(file_path) as input_file:
+        data = json.load(input_file)
         return list(data)

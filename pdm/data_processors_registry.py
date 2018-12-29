@@ -30,7 +30,7 @@ OUTPUT_FORMATS = {
 def get_data_processor(available_processors, data_format, method):
     """
     Function returns data processor callable object defined in data_processors structure
-    :param available_processors: structure of supported formats wit available methods. Should be nested dict (dict of dicts)
+    :param available_processors: structure of supported formats wit available methods. Should be nested dict
     :param data_format: specifies data format requested by user
     :param method: specifies method of selected format
     :return: callable object which will process data
