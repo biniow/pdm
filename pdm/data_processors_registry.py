@@ -3,7 +3,7 @@
 """Module represents data processors registry responsible for storing and providing readers/writers
 information of supported formats"""
 
-READERS = {
+INPUT_FORMATS = {
     'csv': {
         'default': None
     },
@@ -12,7 +12,7 @@ READERS = {
     }
 }
 
-WRITERS = {
+OUTPUT_FORMATS = {
     'text': {
         'default': None
     },
@@ -41,23 +41,3 @@ def get_data_processor(data_processors, data_format, method):
         exception_msg_details = {'data_format': data_format, 'method': method, 'data_processors': data_processors}
         msg = '{data_format} and/or {method} not defined in {data_processors}'.format(**exception_msg_details)
         raise AttributeError(msg)
-
-
-def get_reader(data_format, method):
-    """
-    Wrapper for get_data_processor - search in readers structure automatically
-    :param data_format: specifies data format requested by user
-    :param method: specifies method of selected format
-    :return: proper reader function basing on selected criteria
-    """
-    return get_data_processor(READERS, data_format, method)
-
-
-def get_writer(data_format, method):
-    """
-    Wrapper for get_data_processor - search in writers structure automatically
-    :param data_format: specifies data format requested by user
-    :param method: specifies method of selected format
-    :return: proper writer function basing on selected criteria
-    """
-    return get_data_processor(WRITERS, data_format, method)
