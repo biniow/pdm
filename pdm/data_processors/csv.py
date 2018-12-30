@@ -5,15 +5,15 @@
 import csv
 
 
-def read_csv(file_path, delimiter=','):
+def read_csv(input_file_path, delimiter=','):
     """
     Function reads csv file and returns list of records
-    :param file_path: path to csv file
+    :param input_file_path: path to csv file
     :param delimiter: fields separator in csv file
     :return: list of records
     """
     result = []
-    with open(file_path, 'r') as csv_file:
+    with open(input_file_path, 'r') as csv_file:
         for row in csv.reader(csv_file, delimiter=delimiter):
             result.append(row)
     return result

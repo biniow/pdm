@@ -5,12 +5,12 @@
 import json
 
 
-def read_json(file_path):
+def read_json(input_file_path):
     """
     Function reads json file from path and returns list of records
-    :param file_path: path to json input file
+    :param input_file_path: path to json input file
     :return: list of records
     """
-    with open(file_path) as input_file:
-        data = json.load(input_file)
+    with open(input_file_path) as json_file:
+        data = json.load(json_file)
         return list(data)
