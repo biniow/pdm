@@ -66,6 +66,16 @@ pipeline {
                 }
             }
         }
+
+        stage('Generate .whl and distribution archive') {
+            steps {
+                sh """
+                ${VIRTUAL_ENV_ACTIVATOR}
+                pip install setuptools wheel
+                python setup.py sdist bdist_wheel
+                """
+            }
+        }
     }
 
     post {
@@ -73,6 +83,7 @@ pipeline {
             dir ("${REPORTS_PATH}"){
                 archiveArtifacts artifacts: "*.log"
             }
+            archiveArtifacts artifacts: "dist/*", onlyIfSuccessful: true
         }
     }
 }
