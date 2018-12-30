@@ -3,26 +3,23 @@
 """Module represents data processors registry responsible for storing and providing readers/writers
 information of supported formats"""
 
-import data_processors.csv
-import data_processors.html
-import data_processors.json
-import data_processors.text
+from pdm.data_processors import csv, json, html, text
 
 INPUT_FORMATS = {
     'csv': {
-        'default': data_processors.csv.read_csv
+        'default': csv.read_csv
     },
     'json': {
-        'default': data_processors.json.read_json
+        'default': json.read_json
     }
 }
 
 OUTPUT_FORMATS = {
     'text': {
-        'default': data_processors.text.write_text_output
+        'default': text.write_text_output
     },
     'html': {
-        'default': data_processors.html.write_html_table
+        'default': html.write_html_table
     }
 }
 

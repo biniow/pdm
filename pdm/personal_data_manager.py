@@ -4,7 +4,7 @@
 
 import collections
 
-from data_processors_registry import INPUT_FORMATS, OUTPUT_FORMATS, get_data_processor
+from pdm.data_processors_registry import INPUT_FORMATS, OUTPUT_FORMATS, get_data_processor
 
 
 class _PersonalData(collections.namedtuple('_PersonalData', 'name address phone_number')):
