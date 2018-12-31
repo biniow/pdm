@@ -3,9 +3,11 @@ This repository contains Python framework for personal data (name, address, phon
 
 ## Table of Contents
 - [Overview](#overview)
+- [Prerequisites](#prerequisites)
 - [Installation](#installation)
-- [API](#api)
+- [Example usage in script](#example-usage-in-script)
 - [Command Line Interface](#cli)
+- [API](#api)
 - [Jenkinsfile](#jenkinsfile)
 - [Tests](#tests)
 - [License](#license)
@@ -20,7 +22,7 @@ It is all about the 'plugin' architecture, which allows to register any type of 
 
 ![detailed](https://user-images.githubusercontent.com/25990328/50550478-f4d5c980-0c71-11e9-90c6-a668e9f39c6b.png)
 
-Registartation in plugins registry is very. Configuration is split into two sections `INPUT_FORMATS` and `OUTPUT_FORMATS`. First level of configuration's data structure defines supported formats. Moreover each format can has defined alternate readers and writers which point to callable functions, but it is important, that every format should support ***defult*** reader/writer.
+Registartation in plugins registry is very easy process. Configuration is split into two sections `INPUT_FORMATS` and `OUTPUT_FORMATS`. First level of configuration's data structure defines supported formats. Moreover each format can has defined alternate readers and writers which point to callable functions, but it is important, that every format should support ***defult*** reader/writer.
 
 ```python
 from pdm.data_processors import csv, json, html, text
@@ -73,9 +75,12 @@ OUTPUT_FORMATS = {
 }
 ```
 
+## Prerequisites
+- Python 3.7.0 (should support without any problems older version)
+- Will work on any OS (tested only on ArchLinux with kernel 4.18.10)
 
 ## Installation
-You can install `pdm` using precompiled .whl package or by cloning source code of this repository. In both cases you need to make sure that `setuptools` package is already installed in you Python environment. You can check that by executing command:
+You can install `pdm` using precompiled .whl package or by cloning source code of this repository. In both cases you need to make sure that `setuptools` package is already installed in you Python environment. You can check that by executing command (works only in linux/osx shell - for windows you need to find substitute of `grep` command):
 ```shell
 $ pip list | grep setuptools
 ```
@@ -96,45 +101,21 @@ $ pip install .
 ```
 Now `pdm` should be available in your Python PATH. Moreover `pdm-cli` should be available in your shell.
 
-## API
-If you would like to become a `pdm` developer or just write own reader/writer, have on mind that all registered functions should be compatibile with API, which depends on plugin type (READER/WRITER):
-**1. READER**
-* Mandatory arguments order: `input_file_path` of type `str`
-* Arguments: you can use as much arguments as you like, but rather preffered to use keywords arguments instead of positional
-* Returned value: list of tuples of dict with personal data records. For instance: `[('Mark', 'Australia', '+610000000'), {name: 'Bob', address: 'USA', phone_number: '+100000000000}]`
-* Example of reader function
+## Example usage in script
+Plase take a look below at interactive Python session with `pdm`. It is so easy and great!
 ```python
-def read_csv(input_file_path, delimiter=','):
-    """
-    Function reads csv file and returns list of records
-    :param input_file_path: path to csv file
-    :param delimiter: fields separator in csv file
-    :return: list of records
-    """
-    result = []
-    with open(input_file_path, 'r') as csv_file:
-        for row in csv.reader(csv_file, delimiter=delimiter):
-            result.append(row)
-    return result
-```
-**2. WRITER**
-* Mandatory arguments order: `data` of type `set`, `output_file_path` of type `str`
-* Arguments: you can use as much arguments as you like, but rather preffered to use keywords arguments instead of positional
-* Returned value: Not required, but status can be returned
-* Example of writer function
-```python
-def write_text_output(data, output_file_path):
-    """
-    Function writes data to text file
-    :param data: set of _PersonalData class objects
-    :param output_file_path: path to output file
-    """
-    result = []
-    for data_record in data:
-        result.append(str(data_record))
-
-    with open(output_file_path, 'w') as result_file:
-        result_file.write('\n====================\n'.join(result))
+>>> import pdm
+>>> data_manager = pdm.PersonalDataManager.read_from('json', '/home/wojtek/data.json')
+>>> data_manager.data_records
+{_PersonalData(name='Mark', address='Australia', phone_number='+610000000'), _PersonalData(name='Bob', address='USA', phone_number='+100000000000')}
+>>> data_manager.write_to('text', '/home/wojtek/out.txt', verbose=True)
+Name: Mark
+Address: Australia
+Phone number: +610000000
+====================
+Name: Bob
+Address: USA
+Phone number: +100000000000
 ```
 
 ## CLI
@@ -148,10 +129,11 @@ optional arguments:
                         Prints currently supported formats
   -s SPEC_FILE, --spec-file SPEC_FILE
                         Path to file with input/output details specification
-
+  -v, --verbose         Defines if verbose mode
 ```
 * **-l** - prints currently supported formats and end script execution with status 0
 * **-s** - it is something like a batch mode. You can define set of operations in SPEC FILE (json's structured) and run it automatically. It can be useful when you need to run the same set of operations on different data sets periodically. Example of SPEC file:
+* **-v** - turns on verbose mode. All data processed by script will be printed on the screen
 ```json
 [
         {
@@ -197,9 +179,63 @@ Select data format: text
 Select method for text [default]: 
 Absolute path to output file: /home/wojtek/out.txt
 For further executions you can use specfile with following content:
-[{"input_format": "json", "input_args": {"method": "default", "input_file_path": "/home/wojtek/data.json"}, "output_format": "html", "output_args": {"method": "default", "output_file_path": "/home/wojtek/out.html"}}, {"input_format": "csv", "input_args": {"method": "default", "input_file_path": "/home/wojtek/data.csv"}, "output_format": "text", "output_args": {"method": "default", "output_file_path": "/home/wojtek/out/txt"}}]
+[{"input_format": "json", "input_args": {"method": "default", "input_file_path": "/home/wojtek/data.json"}, "output_format": "html", "output_args": {"method": "default", "output_file_path": "/home/wojtek/out.html"}}, {"input_format": "csv", "input_args": {"method": "default", "input_file_path": "/home/wojtek/data.csv"}, "output_format": "text", "output_args": {"method": "default", "output_file_path": "/home/wojtek/out.txt"}}]
 Done...
 ```
+
+## API
+If you would like to become a `pdm` developer or just write own reader/writer, have on mind that all registered functions should be compatibile with API, which depends on plugin type (READER/WRITER):
+
+**1. READER**
+* Mandatory arguments order: `input_file_path` of type `str`, `verbose=False` od type `bool`
+* Arguments: you can use as much arguments as you like, but rather preffered to use keywords arguments instead of positional
+* Returned value: list of tuples of dict with personal data records. For instance: `[('Mark', 'Australia', '+610000000'), {name: 'Bob', address: 'USA', phone_number: '+100000000000}]`
+* Example of reader function
+```python
+def read_csv(input_file_path, verbose=False, delimiter=','):
+    """
+    Function reads csv file and returns list of records
+    :param input_file_path: path to csv file
+    :param verbose: defines if verbose mode
+    :param delimiter: fields separator in csv file
+    :return: list of records
+    """
+    result = []
+    with open(input_file_path) as csv_file:
+        for row in csv.reader(csv_file, delimiter=delimiter):
+            result.append(row)
+
+    if verbose:
+        print(result)
+
+    return result
+```
+
+**2. WRITER**
+* Mandatory arguments order: `data` of type `set`, `output_file_path` of type `str`, `verbose=False` or type `bool`
+* Arguments: you can use as much arguments as you like, but rather preffered to use keywords arguments instead of positional
+* Returned value: Not required, but status can be returned
+* Example of writer function
+```python
+def write_text_output(data, output_file_path, verbose=False):
+    """
+    Function writes data to text file
+    :param data: set of _PersonalData class objects
+    :param output_file_path: path to output file
+    :param verbose: defines if verbose mode
+    """
+    result = []
+    for data_record in data:
+        result.append(str(data_record))
+
+    with open(output_file_path, 'w') as result_file:
+        txt_output = '\n====================\n'.join(result)
+        result_file.write(txt_output)
+
+        if verbose:
+            print(txt_output)
+```
+
 
 ## Jenkinsfile
 `pdm` is also shipped with Jenkinsfile which can be used in Jenkin's pipelines verification process.
