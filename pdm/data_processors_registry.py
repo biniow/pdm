@@ -15,6 +15,12 @@ INPUT_FORMATS = {
 }
 
 OUTPUT_FORMATS = {
+    'csv': {
+        'default': csv.write_csv
+    },
+    'json': {
+        'default': json.write_json
+    },
     'text': {
         'default': text.write_text_output
     },
