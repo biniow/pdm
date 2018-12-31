@@ -11,6 +11,10 @@ class _PersonalData(collections.namedtuple('_PersonalData', 'name address phone_
     __slots__ = ()
 
     def __str__(self):
+        """
+        Generates string representation of _PersonalDataManager instance
+        :return: str representation of object
+        """
         return "Name: {name}\nAddress: {address}\nPhone number: {phone_number}".format(name=self.name,
                                                                                        address=self.address,
                                                                                        phone_number=self.phone_number)

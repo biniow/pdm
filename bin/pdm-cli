@@ -19,6 +19,7 @@ def parse_args():
     parser.add_argument('-l', '--list-supported-formats', action='store_true',
                         help='Prints currently supported formats')
     parser.add_argument('-s', '--spec-file', help='Path to file with input/output details specification')
+    parser.add_argument('-v', '--verbose', action='store_true', help='Defines if verbose mode')
 
     return parser.parse_args()
 
@@ -33,16 +34,17 @@ def parse_spec_file(file_path):
         return json.load(spec_file)
 
 
-def perform_data_operation(input_format, input_args, output_format, output_args):
+def perform_data_operation(input_format, input_args, output_format, output_args, verbose=False):
     """
     Performs data operation using PersonalDataManager
     :param input_format: input data format
     :param input_args: input data additional args
     :param output_format: output data formats
     :param output_args: output data additional args
+    :param verbose: defines is verbose mode
     """
-    pdm = PersonalDataManager.read_from(input_format, **input_args)
-    pdm.write_to(output_format, **output_args)
+    pdm = PersonalDataManager.read_from(input_format, **input_args, verbose=verbose)
+    pdm.write_to(output_format, **output_args, verbose=verbose)
 
 
 def get_args_from_user(data_type):
@@ -89,7 +91,7 @@ if __name__ == '__main__':
 
     executions = parse_spec_file(args.spec_file) if args.spec_file else run_interactive_mode()
     for execution in executions:
-        perform_data_operation(**execution)
+        perform_data_operation(**execution, verbose=args.verbose)
 
     print('Done...')
     exit(0)

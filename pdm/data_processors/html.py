@@ -3,11 +3,12 @@
 """Plugin for html format support"""
 
 
-def write_html_table(data, output_file_path, header=True):
+def write_html_table(data, output_file_path, verbose=False, header=True):
     """
     Function reads input data and creates html file
     :param data: set of _PersonalData class objects
     :param output_file_path: path to output file
+    :param verbose: defines if verbose mode
     :param header: defines if header should be also presented in output file
     """
     result = "<table border=\"1\">{head}{body}</table>"
@@ -19,7 +20,11 @@ def write_html_table(data, output_file_path, header=True):
         body = _generate_table_body(data, columns_order)
 
         with open(output_file_path, 'w') as result_file:
-            result_file.write(result.format(head=head, body=body))
+            html_result = result.format(head=head, body=body)
+            result_file.write(html_result)
+
+            if verbose:
+                print(html_result)
 
 
 def _generate_table_head(columns_order):
