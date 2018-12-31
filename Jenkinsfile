@@ -84,6 +84,7 @@ pipeline {
                 archiveArtifacts artifacts: "*.log"
             }
             archiveArtifacts artifacts: "dist/*", onlyIfSuccessful: true
+            cleanWs()
         }
     }
 }
